@@ -1,0 +1,166 @@
+/* ============================================================
+   ACCURACY CONSULTANCY — Arabic RTL overrides
+   Loaded after custom.css on Arabic pages only.
+   ============================================================ */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600&display=swap');
+
+html[dir="rtl"] {
+  direction: rtl;
+}
+
+html[dir="rtl"] body {
+  font-family: 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
+  text-align: right;
+}
+
+html[dir="rtl"] {
+  --font-display: 'Noto Kufi Arabic', Tahoma, Arial, sans-serif;
+  --font-body: 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
+}
+
+html[dir="rtl"] .display-xl,
+html[dir="rtl"] .display-lg,
+html[dir="rtl"] .display-md,
+html[dir="rtl"] .display-sm,
+html[dir="rtl"] .intro-text,
+html[dir="rtl"] .service-title,
+html[dir="rtl"] .sector-title,
+html[dir="rtl"] .contact-form-wrap h3,
+html[dir="rtl"] .about-mission-right blockquote {
+  letter-spacing: 0;
+}
+
+html[dir="rtl"] .display-xl {
+  font-size: clamp(48px, 7vw, 88px);
+  line-height: 1.15;
+}
+
+html[dir="rtl"] .display-lg { line-height: 1.25; }
+html[dir="rtl"] .display-md { line-height: 1.35; }
+html[dir="rtl"] .display-sm { line-height: 1.45; }
+
+html[dir="rtl"] .eyebrow,
+html[dir="rtl"] .nav-link,
+html[dir="rtl"] .btn,
+html[dir="rtl"] .service-number,
+html[dir="rtl"] .contact-method-label,
+html[dir="rtl"] .form-group label,
+html[dir="rtl"] .footer-col-label {
+  letter-spacing: 0.035em;
+  text-transform: none;
+}
+
+html[dir="rtl"] .nav-link::after {
+  left: auto;
+  right: 0;
+}
+
+html[dir="rtl"] .btn-arrow::after {
+  content: '←';
+}
+
+html[dir="rtl"] .btn-arrow:hover::after {
+  transform: translateX(-4px);
+}
+
+html[dir="rtl"] .service-card::before {
+  left: auto;
+  right: 0;
+}
+
+html[dir="rtl"] .service-link::after {
+  content: '←';
+}
+
+html[dir="rtl"] .about-mission-right blockquote {
+  border-left: 0;
+  border-right: 2px solid var(--burgundy);
+  padding-left: 0;
+  padding-right: 32px;
+}
+
+html[dir="rtl"] .about-mission-right blockquote + p {
+  padding-left: 0 !important;
+  padding-right: 34px;
+}
+
+html[dir="rtl"] .form-group select {
+  background-position: left 14px center;
+  padding-right: 16px;
+  padding-left: 40px;
+}
+
+html[dir="rtl"] .contact-method-value a[href^="mailto:"],
+html[dir="rtl"] .contact-method-value a[href^="tel:"],
+html[dir="rtl"] .footer a[href^="mailto:"],
+html[dir="rtl"] .footer a[href^="tel:"] {
+  direction: ltr;
+  unicode-bidi: isolate;
+  display: inline-block;
+}
+
+html[dir="rtl"] .responsive-two-col > div:last-child > div {
+  border-left: 0 !important;
+  border-right: 2px solid var(--ash) !important;
+}
+
+html[dir="rtl"] .responsive-two-col > div:last-child > div:first-child {
+  border-right-color: var(--burgundy) !important;
+}
+
+html[dir="rtl"] .hero-sub {
+  max-width: 620px;
+}
+
+html[dir="rtl"] .hero-scroll {
+  letter-spacing: 0.04em;
+  text-transform: none;
+}
+
+html[dir="rtl"] .intro,
+html[dir="rtl"] .sectors-header,
+html[dir="rtl"] .cta-banner {
+  text-align: center;
+}
+
+html[dir="rtl"] .intro .lead {
+  text-align: center !important;
+}
+
+html[dir="rtl"] .language-card {
+  direction: rtl;
+  text-align: center;
+}
+
+@media (max-width: 820px) {
+  html[dir="rtl"] .nav-links {
+    align-items: flex-start;
+  }
+
+  html[dir="rtl"] .nav-link,
+  html[dir="rtl"] .nav-cta-btn {
+    text-align: right;
+  }
+}
+
+@media (max-width: 600px) {
+  html[dir="rtl"] .display-xl {
+    font-size: clamp(42px, 14vw, 62px);
+  }
+}
+
+@media (max-width: 600px) {
+  html[dir="rtl"] .about-mission-right > div[style*="grid-template-columns:1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  html[dir="rtl"] .form-submit {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html[dir="rtl"] .form-submit .btn {
+    justify-content: center;
+  }
+}
