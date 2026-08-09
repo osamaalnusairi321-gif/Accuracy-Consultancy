@@ -24,12 +24,11 @@
     pages: 'الصفحات',
     services: 'الخدمات',
     reachUs: 'تواصل معنا',
-    capacity: 'بناء القدرات',
-    monitoring: 'المراقبة من طرف ثالث',
-    advisory: 'الاستشارات والدعم',
+    advisoryResearch: 'الاستشارات والأبحاث',
+    aiDigital: 'الذكاء الاصطناعي والحلول الرقمية',
     whatsapp: 'واتساب',
     location: 'صنعاء، اليمن',
-    footerBlurb: 'مراقبة مستقلة، وتقييم دقيق، وبناء قدرات للمنظمات العاملة في البيئات المعقدة.',
+    footerBlurb: 'استشارات وأبحاث وحلول مدعومة بالذكاء الاصطناعي للمؤسسات التي تتعامل مع أسواق وبرامج وعمليات معقدة.',
     rights: 'جميع الحقوق محفوظة.',
     precision: 'بُني بدقة.',
     switchLanguage: 'English',
@@ -52,7 +51,7 @@
     advisoryResearch: 'Advisory & Research',
     aiDigital: 'AI & Digital Solutions',
     whatsapp: 'WhatsApp',
-    location: "Jeddah, Saudi Arabia",
+    location: "Sana'a, Yemen",
     footerBlurb: 'Advisory, research, and AI-enabled solutions for organisations navigating complex markets, programmes, and operations.',
     rights: 'All rights reserved.',
     precision: 'Built with precision.',
@@ -77,18 +76,8 @@
   function languageTarget(lang) {
     const file = pageFile || 'index.html';
 
-    /* Arabic service pages are intentionally deferred until the English
-       pages are approved. Until then, the Arabic switch on either new
-       service page lands safely on the existing Arabic homepage. */
-    const englishOnlyServicePages = new Set([
-      'advisory-research.html',
-      'ai-digital-solutions.html'
-    ]);
-
     if (lang === 'ar') {
-      if (isArabic) return file;
-      if (englishOnlyServicePages.has(file)) return 'ar/index.html';
-      return `ar/${file}`;
+      return isArabic ? file : `ar/${file}`;
     }
 
     return isArabic ? `../${file}` : file;
@@ -99,8 +88,6 @@
     const switchTarget = isArabic ? languageTarget('en') : languageTarget('ar');
     const switchLang = isArabic ? 'en' : 'ar';
 
-    /* English gets the new Services dropdown now. Arabic stays on the
-       current navigation until the Arabic service pages are produced. */
     if (isArabic) {
       return `
 <nav class="navbar navbar--transparent" id="ac-navbar" role="navigation" aria-label="${copy.navigation}">
@@ -111,6 +98,18 @@
     <div class="nav-links" id="nav-links">
       <a href="index.html" class="nav-link${page === 'home' ? ' active' : ''}">${copy.home}</a>
       <a href="about.html" class="nav-link${page === 'about' ? ' active' : ''}">${copy.about}</a>
+
+      <div class="nav-dropdown${page === 'services' ? ' active' : ''}" id="services-dropdown">
+        <button class="nav-link nav-dropdown-toggle${page === 'services' ? ' active' : ''}" id="services-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="services-dropdown-menu">
+          <span>${copy.services}</span>
+          <span class="nav-dropdown-caret" aria-hidden="true">⌄</span>
+        </button>
+        <div class="nav-dropdown-menu" id="services-dropdown-menu">
+          <a href="advisory-research.html" class="nav-dropdown-link">${copy.advisoryResearch}</a>
+          <a href="ai-digital-solutions.html" class="nav-dropdown-link">${copy.aiDigital}</a>
+        </div>
+      </div>
+
       <a href="contact.html" class="nav-link nav-cta-btn${page === 'contact' ? ' active' : ''}">${copy.contact}</a>
       <a href="${switchTarget}" class="nav-link language-switch" data-language-switch="${switchLang}" lang="${switchLang}">${copy.switchLanguage}</a>
     </div>
@@ -170,13 +169,14 @@
         <p class="footer-col-label">${copy.pages}</p>
         <a href="index.html">${copy.home}</a>
         <a href="about.html">${copy.about}</a>
+        <a href="advisory-research.html">${copy.advisoryResearch}</a>
+        <a href="ai-digital-solutions.html">${copy.aiDigital}</a>
         <a href="contact.html">${copy.contact}</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-label">${copy.services}</p>
-        <a href="index.html#services">${copy.capacity}</a>
-        <a href="index.html#services">${copy.monitoring}</a>
-        <a href="index.html#services">${copy.advisory}</a>
+        <a href="advisory-research.html">${copy.advisoryResearch}</a>
+        <a href="ai-digital-solutions.html">${copy.aiDigital}</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-label">${copy.reachUs}</p>
@@ -184,8 +184,6 @@
         <a href="tel:+967777778147" dir="ltr">+(967) 77 777 8147</a>
         <a href="https://wa.me/967777778147" target="_blank" rel="noopener noreferrer">${copy.whatsapp}</a>
         <a href="contact.html">${copy.location}</a>
-
-        
       </div>
     </div>
     <div class="footer-bottom">
@@ -210,14 +208,14 @@
         <p class="footer-col-label">${copy.pages}</p>
         <a href="index.html">${copy.home}</a>
         <a href="about.html">${copy.about}</a>
-        <a href="advisory-research.html">Advisory & Research</a>
-        <a href="ai-digital-solutions.html">AI & Digital Solutions</a>
+        <a href="advisory-research.html">${copy.advisoryResearch}</a>
+        <a href="ai-digital-solutions.html">${copy.aiDigital}</a>
         <a href="contact.html">${copy.contact}</a>
       </div>
       <div class="footer-col">
-           <p class="footer-col-label">${copy.services}</p>
-           <a href="advisory-research.html">Advisory & Research</a>
-           <a href="ai-digital-solutions.html">AI & Digital Solutions</a>
+        <p class="footer-col-label">${copy.services}</p>
+        <a href="advisory-research.html">${copy.advisoryResearch}</a>
+        <a href="ai-digital-solutions.html">${copy.aiDigital}</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-label">${copy.reachUs}</p>
@@ -335,11 +333,19 @@
   }
 
   function syncContactServiceOptions() {
-    if (isArabic) return;
     const select = $('#service');
     if (!select) return;
 
-    const options = [
+    const options = isArabic ? [
+      ['Market Entry & Localization', 'دخول السوق والتوطين'],
+      ['Monitoring, Evaluation & Learning', 'المتابعة والتقييم والتعلم'],
+      ['Research & Strategy', 'الأبحاث والاستراتيجية'],
+      ['Program Support & Capacity Building', 'دعم البرامج وبناء القدرات'],
+      ['AI Assessment & Strategy', 'تقييم الذكاء الاصطناعي والاستراتيجية'],
+      ['AI Systems & Automation', 'أنظمة الذكاء الاصطناعي والأتمتة'],
+      ['AI Monitoring & Optimization', 'مراقبة الذكاء الاصطناعي والتحسين'],
+      ['Other / General Enquiry', 'أخرى / استفسار عام']
+    ] : [
       ['Market Entry & Localization', 'Market Entry & Localization'],
       ['Monitoring, Evaluation & Learning', 'Monitoring, Evaluation & Learning'],
       ['Research & Strategy', 'Research & Strategy'],
@@ -350,7 +356,8 @@
       ['Other / General Enquiry', 'Other / General Enquiry']
     ];
 
-    select.innerHTML = '<option value="" disabled selected>Select a service area…</option>' +
+    const placeholder = isArabic ? 'اختر مجال الخدمة…' : 'Select a service area…';
+    select.innerHTML = `<option value="" disabled selected>${placeholder}</option>` +
       options.map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
 
     const requested = new URLSearchParams(window.location.search).get('service');
