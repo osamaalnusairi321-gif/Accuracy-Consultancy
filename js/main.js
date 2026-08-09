@@ -217,7 +217,7 @@
       </div>
       <div class="footer-col">
         <p class="footer-col-label">${copy.reachUs}</p>
-        <a href="mailto:hananabumunaser@gmail.com">hananabumunaser@gmail.com</a>
+        <a href="mailto:hanan@accuracycon.com">hanan@accuracycon.com</a>
         <a href="tel:+967777778147" dir="ltr">+(967) 77 777 8147</a>
         <a href="https://wa.me/967777778147" target="_blank" rel="noopener noreferrer">${copy.whatsapp}</a>
         <a href="contact.html">${copy.location}</a>
