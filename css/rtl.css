@@ -8,7 +8,6 @@
 html[dir="rtl"] {
   direction: rtl;
 }
-
 html[dir="rtl"] body {
   font-family: 'Noto Sans Arabic', Tahoma, Arial, sans-serif;
   text-align: right;
@@ -27,7 +26,9 @@ html[dir="rtl"] .intro-text,
 html[dir="rtl"] .service-title,
 html[dir="rtl"] .sector-title,
 html[dir="rtl"] .contact-form-wrap h3,
-html[dir="rtl"] .about-mission-right blockquote {
+html[dir="rtl"] .about-mission-right blockquote,
+html[dir="rtl"] .practice-card h3,
+html[dir="rtl"] .process-step h3 {
   letter-spacing: 0;
 }
 
@@ -35,7 +36,6 @@ html[dir="rtl"] .display-xl {
   font-size: clamp(48px, 7vw, 88px);
   line-height: 1.15;
 }
-
 html[dir="rtl"] .display-lg { line-height: 1.25; }
 html[dir="rtl"] .display-md { line-height: 1.35; }
 html[dir="rtl"] .display-sm { line-height: 1.45; }
@@ -44,6 +44,7 @@ html[dir="rtl"] .eyebrow,
 html[dir="rtl"] .nav-link,
 html[dir="rtl"] .btn,
 html[dir="rtl"] .service-number,
+html[dir="rtl"] .practice-card-number,
 html[dir="rtl"] .contact-method-label,
 html[dir="rtl"] .form-group label,
 html[dir="rtl"] .footer-col-label {
@@ -56,7 +57,8 @@ html[dir="rtl"] .nav-link::after {
   right: 0;
 }
 
-html[dir="rtl"] .btn-arrow::after {
+html[dir="rtl"] .btn-arrow::after,
+html[dir="rtl"] .service-link::after {
   content: '←';
 }
 
@@ -64,13 +66,10 @@ html[dir="rtl"] .btn-arrow:hover::after {
   transform: translateX(-4px);
 }
 
-html[dir="rtl"] .service-card::before {
+html[dir="rtl"] .service-card::before,
+html[dir="rtl"] .practice-card::before {
   left: auto;
   right: 0;
-}
-
-html[dir="rtl"] .service-link::after {
-  content: '←';
 }
 
 html[dir="rtl"] .about-mission-right blockquote {
@@ -133,14 +132,46 @@ html[dir="rtl"] .language-card {
   text-align: center;
 }
 
+/* New services dropdown */
+html[dir="rtl"] .nav-dropdown-menu,
+html[dir="rtl"] .nav-dropdown-link {
+  text-align: right;
+}
+
+html[dir="rtl"] .nav-dropdown-link {
+  transition: background var(--transition), color var(--transition), padding-right var(--transition);
+}
+
+html[dir="rtl"] .nav-dropdown-link:hover,
+html[dir="rtl"] .nav-dropdown-link:focus-visible {
+  padding-left: 14px;
+  padding-right: 18px;
+}
+
+/* Keep English/Latin acronyms and values readable inside RTL copy. */
+html[dir="rtl"] [dir="ltr"] {
+  unicode-bidi: isolate;
+}
+
 @media (max-width: 820px) {
   html[dir="rtl"] .nav-links {
     align-items: flex-start;
   }
 
   html[dir="rtl"] .nav-link,
-  html[dir="rtl"] .nav-cta-btn {
+  html[dir="rtl"] .nav-cta-btn,
+  html[dir="rtl"] .nav-dropdown-toggle {
     text-align: right;
+  }
+
+  html[dir="rtl"] .nav-dropdown-menu {
+    padding: 0 14px 0 0;
+  }
+
+  html[dir="rtl"] .nav-dropdown-link:hover,
+  html[dir="rtl"] .nav-dropdown-link:focus-visible {
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
@@ -148,9 +179,7 @@ html[dir="rtl"] .language-card {
   html[dir="rtl"] .display-xl {
     font-size: clamp(42px, 14vw, 62px);
   }
-}
 
-@media (max-width: 600px) {
   html[dir="rtl"] .about-mission-right > div[style*="grid-template-columns:1fr 1fr"] {
     grid-template-columns: 1fr !important;
   }
