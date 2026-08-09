@@ -52,7 +52,7 @@
     advisoryResearch: 'Advisory & Research',
     aiDigital: 'AI & Digital Solutions',
     whatsapp: 'WhatsApp',
-    location: "Sana'a, Yemen",
+    location: "Jeddah, Saudi Arabia",
     footerBlurb: 'Advisory, research, and AI-enabled solutions for organisations navigating complex markets, programmes, and operations.',
     rights: 'All rights reserved.',
     precision: 'Built with precision.',
@@ -184,6 +184,8 @@
         <a href="tel:+967777778147" dir="ltr">+(967) 77 777 8147</a>
         <a href="https://wa.me/967777778147" target="_blank" rel="noopener noreferrer">${copy.whatsapp}</a>
         <a href="contact.html">${copy.location}</a>
+
+        
       </div>
     </div>
     <div class="footer-bottom">
@@ -208,12 +210,14 @@
         <p class="footer-col-label">${copy.pages}</p>
         <a href="index.html">${copy.home}</a>
         <a href="about.html">${copy.about}</a>
+        <a href="advisory-research.html">Advisory & Research</a>
+        <a href="ai-digital-solutions.html">AI & Digital Solutions</a>
         <a href="contact.html">${copy.contact}</a>
       </div>
       <div class="footer-col">
-        <p class="footer-col-label">${copy.services}</p>
-        <a href="advisory-research.html">${copy.advisoryResearch}</a>
-        <a href="ai-digital-solutions.html">${copy.aiDigital}</a>
+           <p class="footer-col-label">${copy.services}</p>
+           <a href="advisory-research.html">Advisory & Research</a>
+           <a href="ai-digital-solutions.html">AI & Digital Solutions</a>
       </div>
       <div class="footer-col">
         <p class="footer-col-label">${copy.reachUs}</p>
