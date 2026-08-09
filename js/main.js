@@ -51,7 +51,7 @@
     advisoryResearch: 'Advisory & Research',
     aiDigital: 'AI & Digital Solutions',
     whatsapp: 'WhatsApp',
-    location: "Sana'a, Yemen",
+    location: "Jeddah, Kingdom of Saudi Arabia",
     footerBlurb: 'Advisory, research, and AI-enabled solutions for organisations navigating complex markets, programmes, and operations.',
     rights: 'All rights reserved.',
     precision: 'Built with precision.',
