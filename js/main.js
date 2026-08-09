@@ -39,7 +39,7 @@
     arabic: 'العربية',
     sending: 'جارٍ الإرسال…',
     requiredError: 'يرجى تعبئة جميع الحقول المطلوبة.',
-    setupError: 'نموذج التواصل غير مُهيأ بعد. يرجى إضافة رابط Google Apps Script.',
+    setupError: 'نموذج التواصل غير مُهيأ بعد. يرجى إضافة رابط Google Apps Script.'
   } : {
     home: 'Home',
     about: 'About',
@@ -49,12 +49,11 @@
     pages: 'Pages',
     services: 'Services',
     reachUs: 'Reach Us',
-    capacity: 'Capacity Building',
-    monitoring: 'Third-Party Monitoring',
-    advisory: 'Advisory & Support',
+    advisoryResearch: 'Advisory & Research',
+    aiDigital: 'AI & Digital Solutions',
     whatsapp: 'WhatsApp',
     location: "Sana'a, Yemen",
-    footerBlurb: 'Independent monitoring, rigorous evaluation, and capacity building for organisations operating in complex environments.',
+    footerBlurb: 'Advisory, research, and AI-enabled solutions for organisations navigating complex markets, programmes, and operations.',
     rights: 'All rights reserved.',
     precision: 'Built with precision.',
     switchLanguage: 'العربية',
@@ -64,43 +63,85 @@
     arabic: 'العربية',
     sending: 'Sending…',
     requiredError: 'Please fill in all required fields.',
-    setupError: 'Form not yet configured. Please paste your Google Script URL.',
+    setupError: 'Form not yet configured. Please paste your Google Script URL.'
   };
 
   function currentPage() {
     if (pageFile === '' || pageFile === 'index.html') return 'home';
     if (pageFile.startsWith('about')) return 'about';
     if (pageFile.startsWith('contact')) return 'contact';
+    if (pageFile === 'advisory-research.html' || pageFile === 'ai-digital-solutions.html') return 'services';
     return '';
   }
 
   function languageTarget(lang) {
     const file = pageFile || 'index.html';
-    if (lang === 'ar') return isArabic ? file : `ar/${file}`;
+
+    /* Arabic service pages are intentionally deferred until the English
+       pages are approved. Until then, the Arabic switch on either new
+       service page lands safely on the existing Arabic homepage. */
+    const englishOnlyServicePages = new Set([
+      'advisory-research.html',
+      'ai-digital-solutions.html'
+    ]);
+
+    if (lang === 'ar') {
+      if (isArabic) return file;
+      if (englishOnlyServicePages.has(file)) return 'ar/index.html';
+      return `ar/${file}`;
+    }
+
     return isArabic ? `../${file}` : file;
   }
 
   function buildNavbar() {
     const page = currentPage();
-    const links = [
-      { href: 'index.html', label: copy.home, key: 'home' },
-      { href: 'about.html', label: copy.about, key: 'about' },
-    ];
-    const linksHTML = links
-      .map(l => `<a href="${l.href}" class="nav-link${page === l.key ? ' active' : ''}">${l.label}</a>`)
-      .join('');
-
     const switchTarget = isArabic ? languageTarget('en') : languageTarget('ar');
     const switchLang = isArabic ? 'en' : 'ar';
 
-    return `
+    /* English gets the new Services dropdown now. Arabic stays on the
+       current navigation until the Arabic service pages are produced. */
+    if (isArabic) {
+      return `
 <nav class="navbar navbar--transparent" id="ac-navbar" role="navigation" aria-label="${copy.navigation}">
   <div class="container">
     <a href="index.html" class="nav-logo" aria-label="Accuracy Consultancy — ${copy.home}">
       <img src="${assetPrefix}assets/logo.svg" alt="Accuracy Consultancy" id="nav-logo-img">
     </a>
-    <div class="nav-links" id="nav-links" role="menubar">
-      ${linksHTML}
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" class="nav-link${page === 'home' ? ' active' : ''}">${copy.home}</a>
+      <a href="about.html" class="nav-link${page === 'about' ? ' active' : ''}">${copy.about}</a>
+      <a href="contact.html" class="nav-link nav-cta-btn${page === 'contact' ? ' active' : ''}">${copy.contact}</a>
+      <a href="${switchTarget}" class="nav-link language-switch" data-language-switch="${switchLang}" lang="${switchLang}">${copy.switchLanguage}</a>
+    </div>
+    <button class="nav-toggle" id="nav-toggle" aria-label="${copy.openMenu}" aria-expanded="false" aria-controls="nav-links">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>`;
+    }
+
+    return `
+<nav class="navbar navbar--transparent" id="ac-navbar" role="navigation" aria-label="${copy.navigation}">
+  <div class="container">
+    <a href="index.html" class="nav-logo" aria-label="Accuracy Consultancy — ${copy.home}">
+      <img src="assets/logo.svg" alt="Accuracy Consultancy" id="nav-logo-img">
+    </a>
+    <div class="nav-links" id="nav-links">
+      <a href="index.html" class="nav-link${page === 'home' ? ' active' : ''}">${copy.home}</a>
+      <a href="about.html" class="nav-link${page === 'about' ? ' active' : ''}">${copy.about}</a>
+
+      <div class="nav-dropdown${page === 'services' ? ' active' : ''}" id="services-dropdown">
+        <button class="nav-link nav-dropdown-toggle${page === 'services' ? ' active' : ''}" id="services-dropdown-toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="services-dropdown-menu">
+          <span>${copy.services}</span>
+          <span class="nav-dropdown-caret" aria-hidden="true">⌄</span>
+        </button>
+        <div class="nav-dropdown-menu" id="services-dropdown-menu">
+          <a href="advisory-research.html" class="nav-dropdown-link">${copy.advisoryResearch}</a>
+          <a href="ai-digital-solutions.html" class="nav-dropdown-link">${copy.aiDigital}</a>
+        </div>
+      </div>
+
       <a href="contact.html" class="nav-link nav-cta-btn${page === 'contact' ? ' active' : ''}">${copy.contact}</a>
       <a href="${switchTarget}" class="nav-link language-switch" data-language-switch="${switchLang}" lang="${switchLang}">${copy.switchLanguage}</a>
     </div>
@@ -113,7 +154,9 @@
 
   function buildFooter() {
     const year = new Date().getFullYear();
-    return `
+
+    if (isArabic) {
+      return `
 <footer class="footer" role="contentinfo">
   <div class="container">
     <div class="footer-inner">
@@ -149,6 +192,43 @@
     </div>
   </div>
 </footer>`;
+    }
+
+    return `
+<footer class="footer" role="contentinfo">
+  <div class="container">
+    <div class="footer-inner">
+      <div class="footer-brand-col">
+        <a href="index.html" aria-label="Accuracy Consultancy — ${copy.home}">
+          <img src="assets/logo.svg" class="footer-logo" alt="Accuracy Consultancy">
+        </a>
+        <p>${copy.footerBlurb}</p>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-label">${copy.pages}</p>
+        <a href="index.html">${copy.home}</a>
+        <a href="about.html">${copy.about}</a>
+        <a href="contact.html">${copy.contact}</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-label">${copy.services}</p>
+        <a href="advisory-research.html">${copy.advisoryResearch}</a>
+        <a href="ai-digital-solutions.html">${copy.aiDigital}</a>
+      </div>
+      <div class="footer-col">
+        <p class="footer-col-label">${copy.reachUs}</p>
+        <a href="mailto:hananabumunaser@gmail.com">hananabumunaser@gmail.com</a>
+        <a href="tel:+967777778147" dir="ltr">+(967) 77 777 8147</a>
+        <a href="https://wa.me/967777778147" target="_blank" rel="noopener noreferrer">${copy.whatsapp}</a>
+        <a href="contact.html">${copy.location}</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; ${year} Accuracy Consultancy. ${copy.rights}</p>
+      <p style="font-size:12px;color:rgba(255,255,255,0.18);">${copy.precision}</p>
+    </div>
+  </div>
+</footer>`;
   }
 
   function injectComponents() {
@@ -164,6 +244,7 @@
     if (!nav) return;
 
     const HERO_THRESHOLD = 80;
+
     function updateNav() {
       const scrolled = window.scrollY > HERO_THRESHOLD;
       nav.classList.toggle('navbar--transparent', !scrolled);
@@ -176,19 +257,50 @@
 
     const toggle = $('#nav-toggle');
     const links = $('#nav-links');
+    const dropdown = $('#services-dropdown');
+    const dropdownToggle = $('#services-dropdown-toggle');
+
+    function closeDropdown() {
+      if (!dropdown || !dropdownToggle) return;
+      dropdown.classList.remove('open');
+      dropdownToggle.setAttribute('aria-expanded', 'false');
+    }
+
+    if (dropdown && dropdownToggle) {
+      dropdownToggle.addEventListener('click', (event) => {
+        event.preventDefault();
+        const isOpen = dropdown.classList.toggle('open');
+        dropdownToggle.setAttribute('aria-expanded', String(isOpen));
+      });
+
+      document.addEventListener('click', (event) => {
+        if (!dropdown.contains(event.target)) closeDropdown();
+      });
+
+      document.addEventListener('keydown', (event) => {
+        if (event.key === 'Escape') {
+          closeDropdown();
+          dropdownToggle.focus();
+        }
+      });
+    }
+
     if (toggle && links) {
       toggle.addEventListener('click', () => {
         const isOpen = links.classList.toggle('open');
         toggle.classList.toggle('open', isOpen);
         toggle.setAttribute('aria-expanded', String(isOpen));
         document.body.style.overflow = isOpen ? 'hidden' : '';
+        if (!isOpen) closeDropdown();
       });
+
       links.querySelectorAll('a').forEach(a => {
         a.addEventListener('click', () => {
           links.classList.remove('open');
           toggle.classList.remove('open');
           toggle.setAttribute('aria-expanded', 'false');
           document.body.style.overflow = '';
+          closeDropdown();
         });
       });
     }
@@ -214,7 +326,33 @@
       },
       { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
     );
+
     els.forEach(el => observer.observe(el));
+  }
+
+  function syncContactServiceOptions() {
+    if (isArabic) return;
+    const select = $('#service');
+    if (!select) return;
+
+    const options = [
+      ['Market Entry & Localization', 'Market Entry & Localization'],
+      ['Monitoring, Evaluation & Learning', 'Monitoring, Evaluation & Learning'],
+      ['Research & Strategy', 'Research & Strategy'],
+      ['Program Support & Capacity Building', 'Program Support & Capacity Building'],
+      ['AI Assessment & Strategy', 'AI Assessment & Strategy'],
+      ['AI Systems & Automation', 'AI Systems & Automation'],
+      ['AI Monitoring & Optimization', 'AI Monitoring & Optimization'],
+      ['Other / General Enquiry', 'Other / General Enquiry']
+    ];
+
+    select.innerHTML = '<option value="" disabled selected>Select a service area…</option>' +
+      options.map(([value, label]) => `<option value="${value}">${label}</option>`).join('');
+
+    const requested = new URLSearchParams(window.location.search).get('service');
+    if (requested && options.some(([value]) => value === requested)) {
+      select.value = requested;
+    }
   }
 
   function initContactForm() {
@@ -281,6 +419,8 @@
       const data = {};
       formData.forEach((value, key) => { data[key] = value; });
 
+      /* Keep the existing Apps Script transport intact. The deployed
+         endpoint currently expects this JSON POST pattern. */
       fetch(action, {
         method: 'POST',
         mode: 'no-cors',
@@ -366,6 +506,7 @@
       window.location.replace(languageTarget(saved));
       return;
     }
+
     if (saved) return;
 
     const modal = document.createElement('div');
@@ -383,6 +524,7 @@
           <button type="button" class="language-option${isArabic ? ' language-option--primary' : ''}" data-language-choice="ar" lang="ar">${copy.arabic}</button>
         </div>
       </div>`;
+
     document.body.appendChild(modal);
     document.body.style.overflow = 'hidden';
 
@@ -408,6 +550,7 @@
     injectComponents();
     initNavbar();
     initScrollReveal();
+    syncContactServiceOptions();
     initContactForm();
     initHashLinks();
     initLanguageSelection();
