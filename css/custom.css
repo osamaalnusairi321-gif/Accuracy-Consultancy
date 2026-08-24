@@ -53,6 +53,7 @@
 
 html {
   scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 16px);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -71,6 +72,15 @@ a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 button { cursor: pointer; border: none; background: none; font: inherit; }
 input, textarea, select { font: inherit; }
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid var(--burgundy);
+  outline-offset: 3px;
+}
 
 /* ============================================================
    LAYOUT UTILITIES
@@ -233,6 +243,10 @@ input, textarea, select { font: inherit; }
 
 .btn-arrow:hover::after {
   transform: translateX(4px);
+}
+
+.btn:active {
+  transform: translateY(1px);
 }
 
 /* ============================================================
@@ -540,7 +554,6 @@ input, textarea, select { font: inherit; }
   font-size: 11px;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  animation: scrollBounce 2.5s ease-in-out infinite;
 }
 
 .hero-scroll::after {
@@ -550,11 +563,6 @@ input, textarea, select { font: inherit; }
   height: 48px;
   background: rgba(255,255,255,0.2);
   margin-top: 4px;
-}
-
-@keyframes scrollBounce {
-  0%, 100% { transform: translateX(-50%) translateY(0); }
-  50%       { transform: translateX(-50%) translateY(6px); }
 }
 
 /* ============================================================
@@ -1309,9 +1317,26 @@ input, textarea, select { font: inherit; }
   box-shadow: 0 0 0 3px rgba(123,28,46,0.08);
 }
 
+.form-group input:focus-visible,
+.form-group textarea:focus-visible,
+.form-group select:focus-visible {
+  outline: 3px solid var(--burgundy);
+  outline-offset: 2px;
+}
+
 .form-group textarea {
   resize: vertical;
   min-height: 130px;
+}
+
+.form-group [aria-invalid="true"] {
+  border-color: #c0392b;
+}
+
+.field-error {
+  color: #c0392b;
+  font-size: 13px;
+  line-height: 1.45;
 }
 
 .form-group select {
@@ -1349,13 +1374,13 @@ input, textarea, select { font: inherit; }
 /* ============================================================
    SCROLL ANIMATIONS
    ============================================================ */
-.fade-up {
+html.js .fade-up {
   opacity: 0;
-  transform: translateY(24px);
-  transition: opacity 0.65s ease, transform 0.65s ease;
+  transform: translateY(14px);
+  transition: opacity 0.42s cubic-bezier(0.16, 1, 0.3, 1), transform 0.42s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.fade-up.visible {
+html.js .fade-up.visible {
   opacity: 1;
   transform: translateY(0);
 }
@@ -1461,7 +1486,8 @@ input, textarea, select { font: inherit; }
   color: var(--burgundy);
   background: var(--burgundy-subtle);
   padding-left: 18px;
-  outline: none;
+  outline: 2px solid var(--burgundy);
+  outline-offset: -2px;
 }
 
 /* Two primary practices on the homepage */
@@ -1840,10 +1866,20 @@ input, textarea, select { font: inherit; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .nav-dropdown-menu,
-  .nav-dropdown-caret,
-  .service-card,
-  .practice-card {
-    transition: none;
+  html {
+    scroll-behavior: auto;
+  }
+
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  html.js .fade-up,
+  html.js .fade-up.visible {
+    opacity: 1;
+    transform: none;
   }
 }

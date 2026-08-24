@@ -37,6 +37,8 @@
     arabic: 'العربية',
     sending: 'جارٍ الإرسال…',
     requiredError: 'يرجى تعبئة جميع الحقول المطلوبة.',
+    emailError: 'يرجى إدخال بريد إلكتروني صالح.',
+    submitError: 'تعذّر إرسال الرسالة. يرجى المحاولة مرة أخرى.',
     setupError: 'نموذج التواصل غير مُهيأ بعد. يرجى إضافة رابط Google Apps Script.'
   } : {
     home: 'Home',
@@ -60,6 +62,8 @@
     arabic: 'العربية',
     sending: 'Sending…',
     requiredError: 'Please fill in all required fields.',
+    emailError: 'Please enter a valid email address.',
+    submitError: 'We could not send your message. Please try again.',
     setupError: 'Form not yet configured. Please paste your Google Script URL.'
   };
 
@@ -266,6 +270,14 @@
       dropdownToggle.setAttribute('aria-expanded', 'false');
     }
 
+    function closeMenu() {
+      if (!toggle || !links) return;
+      links.classList.remove('open');
+      toggle.classList.remove('open');
+      toggle.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
+    }
+
     if (dropdown && dropdownToggle) {
       dropdownToggle.addEventListener('click', (event) => {
         event.preventDefault();
@@ -277,12 +289,6 @@
         if (!dropdown.contains(event.target)) closeDropdown();
       });
 
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') {
-          closeDropdown();
-          dropdownToggle.focus();
-        }
-      });
     }
 
     if (toggle && links) {
@@ -296,21 +302,28 @@
 
       links.querySelectorAll('a').forEach(a => {
         a.addEventListener('click', () => {
-          links.classList.remove('open');
-          toggle.classList.remove('open');
-          toggle.setAttribute('aria-expanded', 'false');
-          document.body.style.overflow = '';
+          closeMenu();
           closeDropdown();
         });
       });
     }
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key !== 'Escape') return;
+      const menuWasOpen = Boolean(links && links.classList.contains('open'));
+      const dropdownWasOpen = Boolean(dropdown && dropdown.classList.contains('open'));
+      closeMenu();
+      closeDropdown();
+      if (menuWasOpen && toggle) toggle.focus();
+      else if (dropdownWasOpen && dropdownToggle) dropdownToggle.focus();
+    });
   }
 
   function initScrollReveal() {
     const els = document.querySelectorAll('.fade-up');
     if (!els.length) return;
 
-    if (!('IntersectionObserver' in window)) {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
       els.forEach(el => el.classList.add('visible'));
       return;
     }
@@ -376,6 +389,52 @@
       console.warn('[Accuracy Consultancy] Contact form action is still a placeholder.');
     }
 
+    function clearFieldError(field) {
+      field.style.borderColor = '';
+      field.removeAttribute('aria-invalid');
+      field.removeAttribute('aria-describedby');
+      const message = field.id ? document.getElementById(`${field.id}-error`) : null;
+      if (message) {
+        message.hidden = true;
+        message.textContent = '';
+      }
+    }
+
+    function setFieldError(field, message) {
+      field.style.borderColor = '#c0392b';
+      field.setAttribute('aria-invalid', 'true');
+      if (!field.id) return;
+      const id = `${field.id}-error`;
+      let messageElement = document.getElementById(id);
+      if (!messageElement) {
+        messageElement = document.createElement('p');
+        messageElement.className = 'field-error';
+        messageElement.id = id;
+        messageElement.hidden = true;
+        field.insertAdjacentElement('afterend', messageElement);
+      }
+      messageElement.textContent = message;
+      messageElement.hidden = false;
+      field.setAttribute('aria-describedby', id);
+    }
+
+    function showFormError(message, showDetail) {
+      if (!error) return;
+      error.style.display = 'block';
+      error.setAttribute('tabindex', '-1');
+      const paragraphs = error.querySelectorAll('p');
+      if (paragraphs[0]) paragraphs[0].textContent = message;
+      if (paragraphs[1]) paragraphs[1].hidden = !showDetail;
+      error.focus();
+    }
+
+    function hideFormError() {
+      if (!error) return;
+      error.style.display = 'none';
+      const detail = error.querySelectorAll('p')[1];
+      if (detail) detail.hidden = false;
+    }
+
     form.addEventListener('submit', function (e) {
       e.preventDefault();
 
@@ -383,37 +442,33 @@
       const originalText = btn ? btn.textContent : '';
       const requiredFields = form.querySelectorAll('[required]');
       let isValid = true;
+      let firstInvalid = null;
 
       requiredFields.forEach(field => {
         if (!field.value.trim()) {
           isValid = false;
-          field.style.borderColor = '#c0392b';
+          setFieldError(field, copy.requiredError);
+          if (!firstInvalid) firstInvalid = field;
         } else {
-          field.style.borderColor = '';
+          clearFieldError(field);
         }
       });
 
       const email = form.querySelector('input[type="email"]');
       if (email && email.value && !email.checkValidity()) {
         isValid = false;
-        email.style.borderColor = '#c0392b';
+        setFieldError(email, copy.emailError);
+        if (!firstInvalid) firstInvalid = email;
       }
 
       if (!isValid) {
-        if (error) {
-          error.style.display = 'block';
-          const firstParagraph = error.querySelector('p');
-          if (firstParagraph) firstParagraph.textContent = copy.requiredError;
-        }
+        showFormError(copy.requiredError, false);
+        if (firstInvalid) firstInvalid.focus();
         return;
       }
 
       if (isPlaceholder) {
-        if (error) {
-          error.style.display = 'block';
-          const firstParagraph = error.querySelector('p');
-          if (firstParagraph) firstParagraph.textContent = copy.setupError;
-        }
+        showFormError(copy.setupError, true);
         return;
       }
 
@@ -422,7 +477,7 @@
         btn.textContent = copy.sending;
         btn.style.opacity = '0.7';
       }
-      if (error) error.style.display = 'none';
+      hideFormError();
 
       const formData = new FormData(form);
       const data = {};
@@ -438,10 +493,14 @@
       })
         .then(() => {
           form.style.display = 'none';
-          if (success) success.style.display = 'block';
+          if (success) {
+            success.style.display = 'block';
+            success.setAttribute('tabindex', '-1');
+            success.focus();
+          }
         })
         .catch(() => {
-          if (error) error.style.display = 'block';
+          showFormError(copy.submitError, true);
           if (btn) {
             btn.disabled = false;
             btn.textContent = originalText;
@@ -451,8 +510,8 @@
     });
 
     form.querySelectorAll('input, textarea, select').forEach(field => {
-      field.addEventListener('input', () => { field.style.borderColor = ''; });
-      field.addEventListener('change', () => { field.style.borderColor = ''; });
+      field.addEventListener('input', () => { clearFieldError(field); });
+      field.addEventListener('change', () => { clearFieldError(field); });
     });
   }
 
@@ -465,7 +524,8 @@
           e.preventDefault();
           const offset = 80;
           const top = target.getBoundingClientRect().top + window.scrollY - offset;
-          window.scrollTo({ top, behavior: 'smooth' });
+          const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+          window.scrollTo({ top, behavior: reducedMotion ? 'auto' : 'smooth' });
         }
       });
     });
@@ -485,7 +545,8 @@
       .language-card p{font-size:14px;color:#6B5A5E;margin-bottom:30px}
       .language-options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
       .language-option{display:flex;align-items:center;justify-content:center;min-height:54px;padding:12px 18px;border:1px solid #D4CCC9;background:#fff;color:#1A0D10;font-size:15px;font-weight:500;transition:.2s ease}
-      .language-option:hover,.language-option:focus-visible{border-color:#7B1C2E;color:#7B1C2E;outline:none;transform:translateY(-1px)}
+.language-option:hover{border-color:#7B1C2E;color:#7B1C2E;transform:translateY(-1px)}
+.language-option:focus-visible{border-color:#7B1C2E;color:#7B1C2E;outline:2px solid #7B1C2E;outline-offset:3px;transform:translateY(-1px)}
       .language-option--primary{background:#7B1C2E;color:#fff;border-color:#7B1C2E}
       .language-option--primary:hover,.language-option--primary:focus-visible{background:#5C1422;color:#fff;border-color:#5C1422}
       @media(max-width:520px){.language-card{padding:34px 24px}.language-options{grid-template-columns:1fr}}
@@ -538,6 +599,18 @@
     document.body.style.overflow = 'hidden';
 
     const choices = modal.querySelectorAll('[data-language-choice]');
+    modal.addEventListener('keydown', (event) => {
+      if (event.key !== 'Tab' || choices.length < 2) return;
+      const first = choices[0];
+      const last = choices[choices.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    });
     choices.forEach(button => {
       button.addEventListener('click', () => {
         const selected = button.dataset.languageChoice;
@@ -556,6 +629,7 @@
   }
 
   function init() {
+    document.documentElement.classList.add('js');
     injectComponents();
     initNavbar();
     initScrollReveal();
