@@ -348,7 +348,6 @@
     if (!select) return;
 
     const options = isArabic ? [
-      ['Market Entry & Localization', 'دخول السوق والتوطين'],
       ['Monitoring, Evaluation & Learning', 'المتابعة والتقييم والتعلم'],
       ['Research & Strategy', 'الأبحاث والاستراتيجية'],
       ['Program Support & Capacity Building', 'دعم البرامج وبناء القدرات'],
@@ -357,7 +356,6 @@
       ['AI Monitoring & Optimization', 'مراقبة الذكاء الاصطناعي والتحسين'],
       ['Other / General Enquiry', 'أخرى / استفسار عام']
     ] : [
-      ['Market Entry & Localization', 'Market Entry & Localization'],
       ['Monitoring, Evaluation & Learning', 'Monitoring, Evaluation & Learning'],
       ['Research & Strategy', 'Research & Strategy'],
       ['Program Support & Capacity Building', 'Program Support & Capacity Building'],
